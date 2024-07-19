@@ -4,7 +4,7 @@ XSS-HuNtEr is a powerful tool designed to detect Cross-Site Scripting (XSS) vuln
 # Features
 
 - 100% Accurcate Result
-- No False Possitive
+- Less number of false possitive
 
 # Requirements
     pip install -r requirements.txt
