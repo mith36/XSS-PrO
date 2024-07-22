@@ -5,16 +5,14 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 from selenium.common.exceptions import UnexpectedAlertPresentException, NoAlertPresentException
+import argparse
 
-# Global variable to store the ChromeDriver instance
 chrome_driver = None
 
-#ANSI color codes
 class Colors:
     RESET = "\033[0m"
     RED = "\033[91m"
     GREEN = "\033[92m"
-
 
 def print_in_color(text, color):
     print(color + text + Colors.RESET)
@@ -37,22 +35,18 @@ def send_payload(url, payload, retries=3):
             return response
         except requests.exceptions.ConnectionError as e:
             print(f"Connection error: {e}. Retrying ({attempt + 1}/{retries})...")
-            time.sleep(5)  # Wait for 5 seconds before retrying
+            time.sleep(5) 
         except ConnectionResetError as cre:
             print(f"Connection reset error: {cre}. Retrying ({attempt + 1}/{retries})...")
-            time.sleep(5)  # Wait for 5 seconds before retrying
+            time.sleep(5)  
     return None
 
 # Function to check if the payload triggers a popup
 def check_popup(url, payload):
-    # Get the ChromeDriver instance
     driver = get_chrome_driver()
     
     try:
-        # Navigate to the URL with the payload
         driver.get(url + payload)
-        
-        # Give some time for the script to execute
         time.sleep(2)
         
         # Check for alert
@@ -72,28 +66,51 @@ def check_popup(url, payload):
         except NoAlertPresentException:
             return False, None
     finally:
-        # Do not quit the driver here, keep it open for reuse
         pass
 
 if __name__ == "__main__":
+    print("""
+
+
+                                                                                
+                                             ,-.----.                ,----..    
+ ,--,     ,--,  .--.--.    .--.--.           \    /  \              /   /   \   
+ |'. \   / .`| /  /    '. /  /    '.         |   :    \            /   .     :  
+ ; \ `\ /' / ;|  :  /`. /|  :  /`. /         |   |  .\ :  __  ,-. .   /   ;.  \ 
+ `. \  /  / .';  |  |--` ;  |  |--`          .   :  |: |,' ,'/ /|.   ;   /  ` ; 
+  \  \/  / ./ |  :  ;_   |  :  ;_            |   |   \ :'  | |' |;   |  ; \ ; | 
+   \  \.'  /   \  \    `. \  \    `.         |   : .   /|  |   ,'|   :  | ; | ' 
+    \  ;  ;     `----.   \ `----.   \        ;   | |`-' '  :  /  .   |  ' ' ' : 
+   / \  \  \    __ \  \  | __ \  \  |        |   | ;    |  | '   '   ;  \; /  | 
+  ;  /\  \  \  /  /`--'  //  /`--'  /        :   ' |    ;  : |    \   \  ',  /  
+./__;  \  ;  \'--'.     /'--'.     /         :   : :    |  , ;     ;   :    /   
+|   : / \  \  ; `--'---'   `--'---'          |   | :     ---'       \   \ .'    
+;   |/   \  ' |                              `---'.|                 `---`      
+`---'     `--`                                 `---`                            
+                                                                                
+
+ 
+    """)
+
+    parser = argparse.ArgumentParser(description='Process some URLs and payloads.')
+    parser.add_argument('--payloads', required=True, help='Path to the payload file')
+    parser.add_argument('--urls', required=True, help='Path to the URLs file')
+    
+    args = parser.parse_args()
+    
     # Read URLs from file
-    with open('url.txt', 'r') as url_file:
+    with open(args.urls, 'r') as url_file:
         # Extract the base URL until the '=' sign
         urls = [line.strip()[:line.strip().index('=') + 1] for line in url_file if '=' in line]
 
     # Read payloads from file
-    with open('payload.txt', 'r') as payload_file:
+    with open(args.payloads, 'r') as payload_file:
         payloads = [line.strip() for line in payload_file]
 
     for url in urls:
         for payload in payloads:
-            # Form the complete URL with payload
             url_with_payload = url + payload
-
-            # Send the payload
             response = send_payload(url_with_payload, payload)
-        
-            # Check if the payload triggered a popup
             popup_triggered, alert_text = check_popup(url_with_payload, payload)
         
             if popup_triggered:
@@ -104,5 +121,6 @@ if __name__ == "__main__":
                 print()
         
             time.sleep(10)
-
-
+    # Quit the ChromeDriver instance after use
+    if chrome_driver:
+        chrome_driver.quit()
