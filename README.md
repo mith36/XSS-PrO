@@ -17,5 +17,5 @@ XSS_PRO is a powerful tool designed to detect Cross-Site Scripting (XSS) vulnera
     python XSS_PRO.py --payloads payload.txt --urls url.txt
 
 
-
+# If you’d like to contribute to its enhancement, you’re welcome to do so.
 
