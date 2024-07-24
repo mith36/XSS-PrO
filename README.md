@@ -5,7 +5,8 @@
 
     
 <h1 align="center"><font face="Arial">XSS_PrO</font></h1>
-[@medium](https://medium.com/@mithun_/how-i-created-my-first-xss-tool-xss-pro-bugbounty-982a16079baf)
+
+[@Medium](https://medium.com/@mithun_/how-i-created-my-first-xss-tool-xss-pro-bugbounty-982a16079baf)
 
 XSS_PrO is a powerful tool designed to detect Cross-Site Scripting (XSS) vulnerabilities in web applications. It provides automated scanning capabilities to identify potential XSS vectors and vulnerabilities across web pages and forms.
 
