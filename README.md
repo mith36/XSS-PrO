@@ -17,6 +17,8 @@ XSS_PrO is a powerful tool designed to detect Cross-Site Scripting (XSS) vulnera
 
 # Requirements
     pip install -r requirements.txt
+
+**Ensure Chrome Browser is installed on your system. if not, download and install.**
 - Do wayback on the domain which you want to do xss testing
 - Copy all the waybacked url to the urls.txt file
 - Add your XSS payloads to payloads.txt
