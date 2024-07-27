@@ -27,6 +27,9 @@ XSS_PrO is a powerful tool designed to detect Cross-Site Scripting (XSS) vulnera
 
     python XSS_PRO.py --payloads payload.txt --urls url.txt
 
+![image](https://github.com/user-attachments/assets/2f952022-736a-44a9-9d6f-8ff5ad951e80)
+
+
 
 # If you’d like to contribute to its enhancement, you’re welcome to do so.
 
