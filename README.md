@@ -30,6 +30,7 @@ XSS_PrO is a powerful tool designed to detect Cross-Site Scripting (XSS) vulnera
 ![image](https://github.com/user-attachments/assets/2f952022-736a-44a9-9d6f-8ff5ad951e80)
 
 
+The chrome driver attached is for windows. if you want to run on linux machine replace it with linux chrome driver and change the name in the code also.(line 11)
 
 # If you’d like to contribute to its enhancement, you’re welcome to do so.
 
