@@ -2,21 +2,30 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
-import time
 from selenium.common.exceptions import UnexpectedAlertPresentException, NoAlertPresentException
+import time
 import argparse
+import sys
+from colorama import init, Fore
 
-chrome_driver = None
+chrome_driver_path = "chromedriver.exe"  # Replace with your actual path
 
-class Colors:
-    RESET = "\033[0m"
-    RED = "\033[91m"
-    GREEN = "\033[92m"
+# Initialize Colorama
+init(autoreset=True)
 
 def print_in_color(text, color):
-    print(color + text + Colors.RESET)
-    
+    print(color + text)
+
+class Colors:
+    RESET = Fore.RESET
+    RED = Fore.RED
+    GREEN = Fore.GREEN
+
+
+
+# Global variable for ChromeDriver
+chrome_driver = None
+
 # Function to get the ChromeDriver instance
 def get_chrome_driver():
     global chrome_driver
@@ -24,7 +33,12 @@ def get_chrome_driver():
         # If the ChromeDriver instance doesn't exist, create one
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')  # Run in headless mode
-        chrome_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        try:
+            service = Service(chrome_driver_path)
+            chrome_driver = webdriver.Chrome(service=service, options=options)
+        except Exception as e:
+            print_in_color(f"Error initializing ChromeDriver with path {chrome_driver_path}: {e}", Colors.RED)
+            sys.exit(1)  # Terminate the program with an error code
     return chrome_driver
 
 # Function to send payloads and capture the response
@@ -35,10 +49,10 @@ def send_payload(url, payload, retries=3):
             return response
         except requests.exceptions.ConnectionError as e:
             print(f"Connection error: {e}. Retrying ({attempt + 1}/{retries})...")
-            time.sleep(5) 
+            time.sleep(5)
         except ConnectionResetError as cre:
             print(f"Connection reset error: {cre}. Retrying ({attempt + 1}/{retries})...")
-            time.sleep(5)  
+            time.sleep(5)
     return None
 
 # Function to check if the payload triggers a popup
@@ -47,16 +61,23 @@ def check_popup(url, payload):
     
     try:
         driver.get(url + payload)
-        time.sleep(2)
         
-        # Check for alert
-        try:
-            alert = driver.switch_to.alert
-            alert_text = alert.text
-            alert.accept()
-            return True, alert_text
-        except NoAlertPresentException:
-            return False, None
+        # Wait for a reasonable time for the popup to appear
+        timeout = 10  # seconds
+        start_time = time.time()
+        
+        while time.time() - start_time < timeout:
+            try:
+                # Check for alert
+                alert = driver.switch_to.alert
+                alert_text = alert.text
+                alert.accept()
+                return True, alert_text
+            except NoAlertPresentException:
+                # If no alert is present, wait for a short period before retrying
+                time.sleep(1)
+        
+        return False, None
     except UnexpectedAlertPresentException as e:
         try:
             alert = driver.switch_to.alert
@@ -69,7 +90,7 @@ def check_popup(url, payload):
         pass
 
 if __name__ == "__main__":
-    print("""
+    print(r"""
 
 
                                                                                 
@@ -121,6 +142,7 @@ if __name__ == "__main__":
                 print()
         
             time.sleep(10)
+
     # Quit the ChromeDriver instance after use
     if chrome_driver:
         chrome_driver.quit()
