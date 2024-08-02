@@ -1,4 +1,4 @@
 selenium==4.21.0
 webdriver_manager
 webdriver-manager==4.0.1
-coloramas
+colorama
